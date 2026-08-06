@@ -28,8 +28,8 @@ export const signup = asyncHandler(async (req: Request, res: Response) => {
 
   const hashed = await bcrypt.hash(password, 10);
   const user = await User.create({ email, password: hashed, displayName });
-  const token = generateToken(user._id);
-  res.status(201).json({ token, user: { uid: user._id, email: user.email, displayName: user.displayName } });
+  const token = generateToken(user._id.toString());
+  res.status(201).json({ token, user: { uid: user._id.toString(), email: user.email, displayName: user.displayName } });
 });
 
 // @desc    Login user
@@ -54,6 +54,6 @@ export const login = asyncHandler(async (req: Request, res: Response) => {
     throw new Error('Invalid credentials');
   }
 
-  const token = generateToken(user._id);
-  res.json({ token, user: { uid: user._id, email: user.email, displayName: user.displayName } });
+  const token = generateToken(user._id.toString());
+  res.json({ token, user: { uid: user._id.toString(), email: user.email, displayName: user.displayName } });
 });
