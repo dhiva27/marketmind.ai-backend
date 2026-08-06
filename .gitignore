@@ -1,0 +1,17 @@
+# Node.js & TypeScript
+node_modules/
+dist/
+.env
+.env.local
+
+# Logs
+npm-debug.log*
+yarn-debug.log*
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Optional lock files (keep if desired)
+# package-lock.json
+# yarn.lock
