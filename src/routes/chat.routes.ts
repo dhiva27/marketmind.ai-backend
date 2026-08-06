@@ -1,7 +1,7 @@
 // src/routes/chat.routes.ts
 import { Router } from 'express';
-import { chat } from '@/controllers/chat.controller';
-import { authMiddleware } from '@/middlewares/authMiddleware';
+import { chat } from '../controllers/chat.controller';
+import { authMiddleware } from '../middlewares/authMiddleware';
 
 const router = Router();
 

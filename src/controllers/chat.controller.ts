@@ -1,8 +1,8 @@
 // src/controllers/chat.controller.ts
 import asyncHandler from 'express-async-handler';
 import { Request, Response } from 'express';
-import { Message } from '@/models/Message';
-import { generateChatResponse } from '@/services/openai.service';
+import { Message } from '../models/Message';
+import { generateChatResponse } from '../services/openai.service';
 
 // @desc    Post a new user message and get AI response
 // @route   POST /api/chat
