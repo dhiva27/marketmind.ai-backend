@@ -4,8 +4,8 @@
   "private": true,
   "scripts": {
     "dev": "ts-node-dev --require tsconfig-paths/register --respawn --transpile-only src/server.ts",
-    "build": "tsc",
-    "start": "node -r tsconfig-paths/register dist/server.js",
+    "build": "tsc && tsc-alias",
+    "start": "node dist/server.js",
     "lint": "eslint . --ext .ts"
   },
   "dependencies": {
@@ -34,6 +34,7 @@
     "eslint-plugin-prettier": "^5.2.1",
     "prettier": "^3.3.3",
     "ts-node-dev": "^2.0.0",
+    "tsc-alias": "^1.9.1",
     "typescript": "^5.5.4"
   }
 }
