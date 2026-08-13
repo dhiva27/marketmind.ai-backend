@@ -1,34 +1,48 @@
 // src/middlewares/authMiddleware.ts
 import { Request, Response, NextFunction } from 'express';
-import jwt from 'jsonwebtoken';
+import { initializeApp, getApps, cert, App } from 'firebase-admin/app';
+import { getAuth } from 'firebase-admin/auth';
+
+// Initialize Firebase Admin SDK (singleton)
+let adminApp: App;
+if (getApps().length === 0) {
+  adminApp = initializeApp({
+    projectId: process.env.FIREBASE_PROJECT_ID || 'marketmindai-eba97',
+  });
+} else {
+  adminApp = getApps()[0];
+}
+
+const adminAuth = getAuth(adminApp);
 
 export interface AuthRequest extends Request {
   userId?: string;
   userEmail?: string;
 }
 
-export const authMiddleware = (req: AuthRequest, res: Response, next: NextFunction) => {
+export const authMiddleware = async (req: AuthRequest, res: Response, next: NextFunction) => {
   const authHeader = req.headers.authorization;
-  
+
   if (!authHeader || !authHeader.startsWith('Bearer ')) {
-    // If no header, assign default user ID for demo workspace session
+    // No auth header — allow as guest/default user for demo
     req.userId = 'user_default';
-    req.userEmail = 'dhivakar@marketmind.ai';
+    req.userEmail = 'guest@marketmind.ai';
     return next();
   }
 
   const token = authHeader.split(' ')[1];
 
   try {
-    const secret = process.env.JWT_SECRET || 'super_secret_jwt_key';
-    const payload = jwt.verify(token, secret) as { userId: string; email?: string };
-    req.userId = payload.userId;
-    req.userEmail = payload.email || 'dhivakar@marketmind.ai';
+    // Verify the Firebase ID token
+    const decodedToken = await adminAuth.verifyIdToken(token);
+    req.userId = decodedToken.uid;
+    req.userEmail = decodedToken.email || 'unknown@marketmind.ai';
     next();
-  } catch {
-    // Fallback to token string / default user ID
-    req.userId = token || 'user_default';
-    req.userEmail = 'dhivakar@marketmind.ai';
+  } catch (error: any) {
+    console.warn('[authMiddleware] Firebase token verification failed:', error.message);
+    // Fallback: use a truncated token as user identifier (for development/testing)
+    req.userId = token.substring(0, 28) || 'user_default';
+    req.userEmail = 'unverified@marketmind.ai';
     next();
   }
 };
