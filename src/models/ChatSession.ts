@@ -1,7 +1,7 @@
-import mongoose, { Document, Schema, Types } from 'mongoose';
+import mongoose, { Document, Schema } from 'mongoose';
 
 export interface IChatSession extends Document {
-  userId: Types.ObjectId;
+  userId: string;
   chatId: string;
   title: string;
   lastMessageSnippet?: string;
@@ -11,7 +11,7 @@ export interface IChatSession extends Document {
 
 const ChatSessionSchema = new Schema<IChatSession>(
   {
-    userId: { type: Schema.Types.ObjectId, ref: 'User', required: true },
+    userId: { type: String, required: true, index: true },
     chatId: { type: String, required: true, index: true },
     title: { type: String, required: true, default: 'New Conversation' },
     lastMessageSnippet: { type: String, default: '' },
